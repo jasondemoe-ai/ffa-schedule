@@ -72,20 +72,6 @@
     }
     .refresh-btn:hover { color: var(--text); border-color: var(--accent); }
 
-    .contact-link {
-      text-decoration: none;
-      text-align: center;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.4;
-      transition: color 0.15s;
-    }
-    .contact-link:hover { color: var(--accent); }
-    .contact-phone {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
-    }
 
     /* TABS */
     .tabs {
@@ -332,6 +318,35 @@
       }
       .header-title { font-size: 15px; }
     }
+
+    /* FOOTER */
+    .day-footer {
+      margin-top: 24px;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer-contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 13px;
+      transition: color 0.15s;
+    }
+    .footer-contact:hover { color: var(--accent); }
+    .footer-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+    .footer-phone {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .footer-divider {
+      color: var(--border);
+    }
   </style>
 </head>
 <body>
@@ -342,7 +357,6 @@
       <div class="header-title">Session Hall Schedule</div>
       <div class="header-sub">Oregon FFA State Convention</div>
     </div>
-    <a href="tel:+15415565916" class="contact-link">Jason DeMoe<br><span class="contact-phone">541-556-5916</span></a>
     <button class="refresh-btn" onclick="location.reload()">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
       Refresh
@@ -524,7 +538,7 @@ const DAYS = [
   }
 ];
 
-const LAST_UPDATED = "March 17, 2026 — 7:23 PM";
+const LAST_UPDATED = "March 17, 2026 — 7:25 PM";
 
 const TYPE_CONFIG = {
   setup:      { label: "Setup / Strike",   tagClass: "tag-setup",      itemClass: "item-setup" },
@@ -614,7 +628,14 @@ function buildContent() {
       </div>
       ${callTimeHTML}
       <div class="schedule">${itemsHTML}</div>
-      <div class="last-updated">Last updated: ${LAST_UPDATED}</div>`;
+      <div class="last-updated">Last updated: ${LAST_UPDATED}</div>
+      <div class="day-footer">
+        <a href="tel:+15415565916" class="footer-contact">
+          <span class="footer-name">Jason DeMoe</span>
+          <span class="footer-divider">|</span>
+          <span class="footer-phone">541-556-5916</span>
+        </a>
+      </div>\`;
 
     contentEl.appendChild(panel);
   });
