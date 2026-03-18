@@ -72,6 +72,21 @@
     }
     .refresh-btn:hover { color: var(--text); border-color: var(--accent); }
 
+    .contact-link {
+      text-decoration: none;
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+      transition: color 0.15s;
+    }
+    .contact-link:hover { color: var(--accent); }
+    .contact-phone {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
     /* TABS */
     .tabs {
       display: flex;
@@ -325,8 +340,9 @@
   <div class="header-top">
     <div>
       <div class="header-title">Session Hall Schedule</div>
-      <div class="header-sub">Oregon FFA State Convention &middot; March 2026</div>
+      <div class="header-sub">Oregon FFA State Convention</div>
     </div>
+    <a href="tel:+15415565916" class="contact-link">Jason DeMoe<br><span class="contact-phone">541-556-5916</span></a>
     <button class="refresh-btn" onclick="location.reload()">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
       Refresh
@@ -508,7 +524,7 @@ const DAYS = [
   }
 ];
 
-const LAST_UPDATED = "March 17, 2026 — 7:18 PM";
+const LAST_UPDATED = "March 17, 2026 — 7:23 PM";
 
 const TYPE_CONFIG = {
   setup:      { label: "Setup / Strike",   tagClass: "tag-setup",      itemClass: "item-setup" },
@@ -531,15 +547,17 @@ function todayDateStr() {
 function buildTabs() {
   const today = todayDateStr();
   const tabsEl = document.getElementById('tabs');
+  let firstVisible = -1;
   DAYS.forEach((day, i) => {
+    if (day.date < today) return; // hide past days
     const isToday = day.date === today;
+    if (firstVisible === -1) firstVisible = i;
     const tab = document.createElement('div');
-    tab.className = 'tab' + (i === 0 ? ' active' : '');
+    tab.className = 'tab';
     tab.dataset.idx = i;
     tab.innerHTML = day.label + (isToday ? '<span class="today-badge">TODAY</span>' : '');
     tab.addEventListener('click', () => switchTab(i));
     tabsEl.appendChild(tab);
-    if (isToday) switchTab(i, false);
   });
 }
 
@@ -550,14 +568,7 @@ function buildContent() {
     panel.className = 'day-panel' + (i === 0 ? ' active' : '');
     panel.id = 'panel-' + i;
 
-    const legend = `
-      <div class="legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Setup / Strike</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Rehearsal</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Live / Session</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Meal</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#06b6d4"></div>Pre-Session</div>
-      </div>`;
+
 
     const callTimeHTML = day.callTime
       ? `<div class="call-time-banner">
@@ -601,7 +612,6 @@ function buildContent() {
         <h2>${day.title}</h2>
         <div class="day-desc">${day.desc}</div>
       </div>
-      ${legend}
       ${callTimeHTML}
       <div class="schedule">${itemsHTML}</div>
       <div class="last-updated">Last updated: ${LAST_UPDATED}</div>`;
@@ -627,8 +637,11 @@ buildTabs();
 buildContent();
 
 const today = todayDateStr();
-const todayIdx = DAYS.findIndex(d => d.date === today);
-if (todayIdx >= 0) switchTab(todayIdx);
+// Find today or the next upcoming day
+const visibleDays = DAYS.filter(d => d.date >= today);
+const firstDay = visibleDays.length > 0 ? visibleDays[0] : null;
+const firstIdx = firstDay ? DAYS.findIndex(d => d.date === firstDay.date) : 0;
+switchTab(firstIdx);
 </script>
 </body>
 </html>
