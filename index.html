@@ -210,6 +210,7 @@
     .item-meal::before     { background: var(--red); }
     .item-misc::before     { background: var(--purple); }
     .item-presession::before { background: var(--cyan); }
+  .item-camera::before     { background: #f59e0b; }
 
     .item-time {
       font-size: 13px;
@@ -258,6 +259,7 @@
     .tag-meal     { background: rgba(239,68,68,0.15); color: var(--red); }
     .tag-misc     { background: rgba(168,85,247,0.15); color: var(--purple); }
     .tag-presession { background: rgba(6,182,212,0.15); color: var(--cyan); }
+  .tag-camera     { background: rgba(245,158,11,0.15); color: #f59e0b; }
 
     /* BREAK ZONE BANNER */
     .break-zone {
@@ -422,6 +424,7 @@ const DAYS = [
       { time: "3:30 PM",  title: "Creed Speaking Mic Check", type: "rehearsal" },
       { time: "4:00 PM",  title: "National Anthem Singer Mic Check", type: "rehearsal" },
       { time: "4:30 PM",  title: "Dinner — Panda Express", type: "meal" },
+      { time: "5:40 PM",  title: "Camera Operator Call Time", type: "camera" },
       { time: "6:00 PM",  title: "Doors Open", type: "presession" },
       { time: "6:15 PM",  title: "Pre-Session: Mosh Pit / Dance Party", type: "presession",
         notes: ["Play Ag West Sponsor Video", "Play Grange Co-op Sponsor Video", "Play Belonging & Engagement Video", "6:55 PM — Session Countdown Video Starts"] },
@@ -439,6 +442,7 @@ const DAYS = [
     callTime: "6:30 AM",
     items: [
       { time: "6:45 AM",  title: "Beginning Public Speaking Mic Check", type: "rehearsal" },
+      { time: "6:55 AM",  title: "Camera Operator Call Time", type: "camera" },
       { time: "7:15 AM",  title: "Doors Open / Pre-Session", type: "presession",
         notes: ["Play Tillamook Sponsor Video", "Play Roundhouse Sponsor Video", "7:20 AM — Dance Party", "Play Wilco Sponsor Video", "7:55 AM — Session Countdown Video Starts"] },
       { time: "8:00 AM",  title: "Session 2", type: "live" },
@@ -449,6 +453,7 @@ const DAYS = [
       { time: "4:00 PM",  title: "Prepared Public Speaking Mic Check", type: "rehearsal" },
       { time: "4:30 PM",  title: "National Anthem Singer Mic Check", type: "rehearsal" },
       { time: "4:30 PM",  title: "Dinner — Applebee's", type: "meal" },
+      { time: "4:40 PM",  title: "Camera Operator Call Time", type: "camera" },
       { time: "5:00 PM",  title: "Doors Open", type: "presession" },
       { time: "5:15 PM",  title: "Pre-Session: Activity & Awards", type: "presession",
         notes: ["Play Ag West Sponsor Video", "Wilco Gift Card Photo Contest Awards", "5:35 PM — Auction Cardboard Cutouts: Hunter & Vivian", "Play Grange Co-op Sponsor Video", "Play Belonging & Engagement Video", "5:55 PM — Session Countdown Video Starts"] },
@@ -466,6 +471,7 @@ const DAYS = [
     callTime: "6:30 AM",
     items: [
       { time: "6:45 AM",  title: "Sophomore Public Speaking Mic Check", type: "rehearsal" },
+      { time: "6:55 AM",  title: "Camera Operator Call Time", type: "camera" },
       { time: "7:15 AM",  title: "Doors Open / Pre-Session", type: "presession",
         notes: ["Play Tillamook Sponsor Video", "Play Roundhouse Sponsor Video", "7:20 AM — Dance Party", "Play Wilco Sponsor Video", "7:55 AM — Session Countdown Video Starts"] },
       { time: "8:00 AM",  title: "Spanish Creed Speaking Mic Check", type: "rehearsal" },
@@ -480,6 +486,7 @@ const DAYS = [
       { time: "4:00 PM",  title: "Extemporaneous Public Speaking Mic Check", type: "rehearsal" },
       { time: "4:30 PM",  title: "Dinner — Taco Del Mar", type: "meal" },
       { time: "4:30 PM",  title: "National Anthem Singer Mic Check", type: "rehearsal" },
+      { time: "4:40 PM",  title: "Camera Operator Call Time", type: "camera" },
       { time: "5:00 PM",  title: "Doors Open", type: "presession" },
       { time: "5:15 PM",  title: "Pre-Session: Activity & Awards", type: "presession",
         notes: ["Play Ag West Sponsor Video", "Wilco Chapter Giveaway Presentations", "Talent Awards", "5:35 PM — Auction Cardboard Cutouts: Spencer & Julie", "Play Grange Co-op Sponsor Video", "Play Belonging & Engagement Video", "5:55 PM — Session Countdown Video Starts"] },
@@ -500,6 +507,7 @@ const DAYS = [
       { time: "8:00 AM",  title: "Delegate Business Session", type: "live" },
       { time: "10:00 AM", title: "National Anthem Singer Mic Check", type: "rehearsal" },
       { time: "10:00 AM", title: "Brunch", type: "meal" },
+      { time: "10:40 AM", title: "Camera Operator Call Time", type: "camera" },
       { time: "11:00 AM", title: "Doors Open", type: "presession" },
       { time: "11:15 AM", title: "Pre-Session: Mosh Pit / Dance Party", type: "presession",
         notes: ["Play Wilco Sponsor Video", "11:35 AM — Auction Cardboard Cutouts: Dale & Taft", "Play Tillamook Sponsor Video", "Play Belonging & Engagement Video", "11:55 AM — Session Countdown Video Starts"] },
@@ -524,7 +532,7 @@ const DAYS = [
   }
 ];
 
-const LAST_UPDATED = "March 17, 2026 — 7:34 PM";
+const LAST_UPDATED = "March 17, 2026 — 7:51 PM";
 
 const TYPE_CONFIG = {
   setup:      { label: "Setup / Strike",   tagClass: "tag-setup",      itemClass: "item-setup" },
@@ -534,6 +542,7 @@ const TYPE_CONFIG = {
   misc:       { label: "Admin",             tagClass: "tag-misc",        itemClass: "item-misc" },
   presession: { label: "Pre-Session",       tagClass: "tag-presession",  itemClass: "item-presession" },
   break:      { label: "Break Window",       tagClass: "tag-misc",        itemClass: "item-misc" },
+  camera:     { label: "Camera",              tagClass: "tag-camera",      itemClass: "item-camera" },
 };
 
 function todayDateStr() {
