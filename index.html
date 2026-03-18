@@ -538,7 +538,7 @@ const DAYS = [
   }
 ];
 
-const LAST_UPDATED = "March 17, 2026 — 7:25 PM";
+const LAST_UPDATED = "March 17, 2026 — 7:26 PM";
 
 const TYPE_CONFIG = {
   setup:      { label: "Setup / Strike",   tagClass: "tag-setup",      itemClass: "item-setup" },
@@ -635,16 +635,18 @@ function buildContent() {
           <span class="footer-divider">|</span>
           <span class="footer-phone">541-556-5916</span>
         </a>
-      </div>\`;
+      </div>`;
 
     contentEl.appendChild(panel);
   });
 }
 
 function switchTab(idx, scroll = true) {
-  document.querySelectorAll('.tab').forEach((t, i) => {
-    t.classList.toggle('active', i === idx);
+  // tabs: compare against stored DAYS index (past days are removed from DOM)
+  document.querySelectorAll('.tab').forEach((t) => {
+    t.classList.toggle('active', parseInt(t.dataset.idx) === idx);
   });
+  // panels: all DAYS panels exist in DOM, so direct index match works
   document.querySelectorAll('.day-panel').forEach((p, i) => {
     p.classList.toggle('active', i === idx);
   });
