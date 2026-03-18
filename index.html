@@ -447,12 +447,17 @@ const DAYS = [
     date: "2026-03-21",
     title: "Saturday, March 21",
     desc: "Session 4 · Session 5",
-    callTime: "",
+    callTime: "6:30 AM",
     items: [
       { time: "6:45 AM",  title: "Sophomore Public Speaking Mic Check", type: "rehearsal" },
       { time: "7:15 AM",  title: "Doors Open / Pre-Session", type: "presession",
         notes: ["Play Tillamook Sponsor Video", "Play Roundhouse Sponsor Video", "7:20 AM — Dance Party", "Play Wilco Sponsor Video", "7:55 AM — Session Countdown Video Starts"] },
+      { time: "8:00 AM",  title: "Spanish Creed Speaking Mic Check", type: "rehearsal" },
+      { time: "8:00 AM",  title: "Talent Show Finalists AV Meeting", type: "rehearsal",
+        notes: "@ Front of House (FOH)" },
       { time: "8:00 AM",  title: "Session 4", type: "live" },
+      { time: "10:30 AM", title: "Possible IPS Technician Rest / Break", type: "break",
+        notes: "Window: 10:30 AM – 4:00 PM" },
       { time: "10:30 AM", title: "Proficiency Awards Rehearsal", type: "rehearsal" },
       { time: "12:00 PM", title: "Lunch — Jimmy John's", type: "meal" },
       { time: "1:00 PM",  title: "Delegate Business Session", type: "live" },
@@ -463,8 +468,7 @@ const DAYS = [
       { time: "5:15 PM",  title: "Pre-Session: Activity & Awards", type: "presession",
         notes: ["Play Ag West Sponsor Video", "Wilco Chapter Giveaway Presentations", "Talent Awards", "5:35 PM — Auction Cardboard Cutouts: Spencer & Julie", "Play Grange Co-op Sponsor Video", "Play Belonging & Engagement Video", "5:55 PM — Session Countdown Video Starts"] },
       { time: "6:00 PM",  title: "Session 5", type: "live" },
-      { time: "8:00 PM",  title: "Talent Show Finalists AV Check", type: "rehearsal" },
-      { time: "8:00 PM",  title: "Spanish Creed Speaking Mic Check", type: "rehearsal" },
+
       { time: "9:00 PM",  title: "Stage Rehearsal — Session Chair / RA Speaker", type: "rehearsal",
         notes: "Next day rehearsal (if needed)" }
     ]
@@ -504,7 +508,7 @@ const DAYS = [
   }
 ];
 
-const LAST_UPDATED = "March 17, 2026 — 7:11 PM";
+const LAST_UPDATED = "March 17, 2026 — 7:13 PM";
 
 const TYPE_CONFIG = {
   setup:      { label: "Setup / Strike",   tagClass: "tag-setup",      itemClass: "item-setup" },
