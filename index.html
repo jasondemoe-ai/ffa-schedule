@@ -212,20 +212,28 @@
     .item-presession::before { background: var(--cyan); }
   .item-camera::before     { background: #f59e0b; }
     /* ── Now & Next live indicator ── */
-    .item-now {
-      background: rgba(16, 185, 129, 0.12);
-      border-left: none;
-      outline: 2px solid #10b981;
-      outline-offset: -2px;
-    }
-    .item-now::before { background: #10b981 !important; width: 4px; }
+    .item-now,
     .item-next {
-      background: rgba(59, 130, 246, 0.08);
-      border-left: none;
-      outline: 1px solid rgba(59, 130, 246, 0.4);
-      outline-offset: -1px;
+      background: rgba(16, 185, 129, 0.13);
+      border: 2px solid #10b981;
+      border-radius: 8px;
     }
-    .item-next::before { width: 4px; }
+    .item-now::before,
+    .item-next::before { background: #10b981 !important; width: 4px; }
+
+    /* Adjacent pair: merge into single seamless box */
+    .item-zone-top {
+      border-radius: 8px 8px 0 0;
+      border-bottom: none;
+      margin-bottom: -6px !important; /* collapse the gap */
+      position: relative;
+      z-index: 1;
+    }
+    .item-zone-bottom {
+      border-radius: 0 0 8px 8px;
+      border-top: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
     .now-badge, .next-badge {
       display: inline-block;
       font-size: 10px;
@@ -236,9 +244,9 @@
       margin-left: 6px;
       vertical-align: middle;
       letter-spacing: 0.05em;
+      background: #10b981;
+      color: #fff;
     }
-    .now-badge  { background: #10b981; color: #fff; }
-    .next-badge { background: rgba(59,130,246,0.18); color: #3b82f6; }
 
 
     .item-time {
@@ -572,7 +580,7 @@ const DAYS = [
   }
 ];
 
-const LAST_UPDATED = "March 19, 2026 — 2:03 PM";
+const LAST_UPDATED = "March 19, 2026 — 2:08 PM";
 
 const TYPE_CONFIG = {
   setup:      { label: "Setup / Strike",   tagClass: "tag-setup",      itemClass: "item-setup" },
@@ -731,7 +739,7 @@ function updateNowNext() {
   const items = panel.querySelectorAll('.schedule-item');
   // Clear previous indicators
   items.forEach(el => {
-    el.classList.remove('item-now', 'item-next');
+    el.classList.remove('item-now', 'item-next', 'item-zone-top', 'item-zone-bottom');
     el.querySelectorAll('.now-badge, .next-badge').forEach(b => b.remove());
   });
 
@@ -770,6 +778,11 @@ function updateNowNext() {
       badge.textContent = 'UP NEXT';
       titleEl.appendChild(badge);
     }
+  }
+  // Merge into single box when now and next are adjacent
+  if (nowIdx !== -1 && nextIdx !== -1 && nextIdx === nowIdx + 1 && items[nowIdx] && items[nextIdx]) {
+    items[nowIdx].classList.add('item-zone-top');
+    items[nextIdx].classList.add('item-zone-bottom');
   }
 }
 
