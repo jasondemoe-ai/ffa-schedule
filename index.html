@@ -532,7 +532,7 @@ const DAYS = [
   }
 ];
 
-const LAST_UPDATED = "March 17, 2026 — 7:51 PM";
+const LAST_UPDATED = "March 19, 2026 — 8:02 AM";
 
 const TYPE_CONFIG = {
   setup:      { label: "Setup / Strike",   tagClass: "tag-setup",      itemClass: "item-setup" },
@@ -660,6 +660,14 @@ const visibleDays = DAYS.filter(d => d.date >= today);
 const firstDay = visibleDays.length > 0 ? visibleDays[0] : null;
 const firstIdx = firstDay ? DAYS.findIndex(d => d.date === firstDay.date) : 0;
 switchTab(firstIdx);
+
+// Auto-refresh when the calendar date rolls over (so stale open tabs update overnight)
+const _loadedDate = todayDateStr();
+setInterval(function() {
+  if (todayDateStr() !== _loadedDate) {
+    location.reload();
+  }
+}, 60000); // check every 60 seconds
 </script>
 </body>
 </html>
