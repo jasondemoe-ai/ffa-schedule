@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta property="og:title" content="Tech Crew Daily Schedule — 98th Oregon FFA State Convention" />
+  <meta property="og:description" content="Technician schedule for March 16–23, 2026 · Redmond, OR" />
+  <meta property="og:image" content="https://ffa-schedule.vercel.app/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://ffa-schedule.vercel.app" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://ffa-schedule.vercel.app/og.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Session Hall Schedule — Oregon FFA 2026</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #222535;
+      --border: #2e3248;
+      --text: #e8eaf6;
+      --muted: #8b90b0;
+      --accent: #4f6ef7;
+      --blue: #3b82f6;
+      --yellow: #f59e0b;
+      --green: #22c55e;
+      --red: #ef4444;
+      --purple: #a855f7;
+      --cyan: #06b6d4;
+      --tab-active: #4f6ef7;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .header-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.3px;
+    }
+    .header-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .refresh-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .refresh-btn:hover { color: var(--text); border-color: var(--accent); }
+
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 0;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex-shrink: 0;
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .tab.active {
+      color: var(--tab-active);
+      border-bottom-color: var(--tab-active);
+    }
+    .tab:hover:not(.active) { color: var(--text); }
+
+    /* TODAY badge */
+    .today-badge {
+      background: var(--accent);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+
+    /* CONTENT */
+    .content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    .day-panel { display: none; }
+    .day-panel.active { display: block; }
+
+    .day-header {
+      margin-bottom: 20px;
+    }
+    .day-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .day-header .day-desc {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* CALL TIME BANNER */
+    .call-time-banner {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .call-time-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--accent);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .call-time-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .call-time-value.pending {
+      color: var(--muted);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 13px;
+    }
+
+    /* SCHEDULE TABLE */
+    .schedule {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .schedule-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 10px;
+      align-items: start;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .schedule-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+    }
+
+    .item-setup::before    { background: var(--blue); }
+    .item-rehearsal::before { background: var(--yellow); }
+    .item-live::before     { background: var(--green); }
+    .item-meal::before     { background: var(--red); }
+    .item-misc::before     { background: var(--purple); }
+    .item-presession::before { background: var(--cyan); }
+  .item-camera::before     { background: #f59e0b; }
+
+    .item-time {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      padding-top: 1px;
+      white-space: nowrap;
+    }
+
+    .item-right {}
+
+    .item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .item-notes {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.6;
+    }
+    .item-notes ul {
+      padding-left: 14px;
+      margin-top: 3px;
+    }
+    .item-notes li {
+      margin-bottom: 2px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 5px;
+    }
+    .tag-setup    { background: rgba(59,130,246,0.15); color: var(--blue); }
+    .tag-rehearsal { background: rgba(245,158,11,0.15); color: var(--yellow); }
+    .tag-live     { background: rgba(34,197,94,0.15); color: var(--green); }
+    .tag-meal     { background: rgba(239,68,68,0.15); color: var(--red); }
+    .tag-misc     { background: rgba(168,85,247,0.15); color: var(--purple); }
+    .tag-presession { background: rgba(6,182,212,0.15); color: var(--cyan); }
+  .tag-camera     { background: rgba(245,158,11,0.15); color: #f59e0b; }
+
+    /* BREAK ZONE BANNER */
+    .break-zone {
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(168,85,247,0.04),
+        rgba(168,85,247,0.04) 6px,
+        transparent 6px,
+        transparent 14px
+      );
+      border: 1px dashed rgba(168,85,247,0.35);
+      border-radius: 8px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 2px 0;
+    }
+    .break-zone-label {
+      font-size: 12px;
+      color: var(--purple);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+    .break-zone-time {
+      font-size: 11px;
+      color: rgba(168,85,247,0.6);
+      white-space: nowrap;
+    }
+
+    /* LAST UPDATED */
+    .last-updated {
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 30px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 480px) {
+      .schedule-item {
+        grid-template-columns: 70px 1fr;
+      }
+      .header-title { font-size: 15px; }
+    }
+
+    /* FOOTER */
+    .day-footer {
+      margin-top: 24px;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer-contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 13px;
+      transition: color 0.15s;
+    }
+    .footer-contact:hover { color: var(--accent); }
+    .footer-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+    .footer-phone {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .footer-divider {
+      color: var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-title">Session Hall Schedule</div>
+      <div class="header-sub">Oregon FFA State Convention</div>
+    </div>
+    <button class="refresh-btn" onclick="location.reload()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+      Refresh
+    </button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<div class="content" id="content"></div>
+
+<script>
+const DAYS = [
+  {
+    id: "mon316",
+    label: "Mon 3/16",
+    date: "2026-03-16",
+    title: "Monday, March 16",
+    desc: "Load In Day",
+    callTime: "",
+    items: [
+      { time: "8:00 AM", title: "IPS Semi Load In Begins", type: "setup" },
+      { time: "All Day",  title: "Stage, Light & Sound Build", type: "setup" },
+      { time: "12:00 PM", title: "Lunch", type: "meal" },
+      { time: "5:30 PM",  title: "Dinner", type: "meal" }
+    ]
+  },
+  {
+    id: "tue317",
+    label: "Tue 3/17",
+    date: "2026-03-17",
+    title: "Tuesday, March 17",
+    desc: "AV Setup & Walk Through",
+    callTime: "",
+    items: [
+      { time: "All Day",  title: "IPS Light & Sound Set Up", type: "setup" },
+      { time: "12:00 PM", title: "Lunch", type: "meal" },
+      { time: "1:00 PM",  title: "Session Walk Through", type: "rehearsal",
+        notes: "Nolan & Lee with AV Team" },
+      { time: "5:30 PM",  title: "Dinner", type: "meal" }
+    ]
+  },
+  {
+    id: "wed318",
+    label: "Wed 3/18",
+    date: "2026-03-18",
+    title: "Wednesday, March 18",
+    desc: "All-Day Session Rehearsals",
+    callTime: "7:30 AM",
+    items: [
+      { time: "7:45 AM",  title: "Mic Up the Officers", type: "rehearsal" },
+      { time: "8:00 AM",  title: "Session 1 Rehearsal", type: "rehearsal" },
+      { time: "10:00 AM", title: "Session 2 Rehearsal", type: "rehearsal" },
+      { time: "12:00 PM", title: "Session 3 Rehearsal", type: "rehearsal" },
+      { time: "2:00 PM",  title: "Session 4 Rehearsal", type: "rehearsal" },
+      { time: "4:00 PM",  title: "Session 5 Rehearsal", type: "rehearsal" },
+      { time: "6:00 PM",  title: "Session 6 Rehearsal", type: "rehearsal" },
+      { time: "8:00 PM",  title: "Expected Close", type: "misc" }
+    ]
+  },
+  {
+    id: "thu319",
+    label: "Thu 3/19",
+    date: "2026-03-19",
+    title: "Thursday, March 19",
+    desc: "Opening Night",
+    callTime: "8:30 AM",
+    items: [
+      { time: "9:00 AM",  title: "Stage Rehearsal — State Officers", type: "rehearsal",
+        notes: "As needed" },
+      { time: "10:00 AM", title: "Possible IPS Technician Rest / Break", type: "break",
+        notes: "Window: 10:00 AM – 4:00 PM" },
+      { time: "11:30 AM", title: "Lunch — Jimmy John's", type: "meal" },
+      { time: "12:30 PM", title: "Set Up PA — Hypnotist Room", type: "setup",
+        notes: "Cascade Lakes South Finals Stage" },
+      { time: "3:00 PM",  title: "Camera Volunteers Set Up Back Wall Pipe & Drape", type: "setup" },
+      { time: "3:30 PM",  title: "Creed Speaking Mic Check", type: "rehearsal" },
+      { time: "3:30 PM",  title: "Camera Volunteers Move Secretary Table Pipe & Drape To The Floor", type: "setup" },
+      { time: "4:00 PM",  title: "National Anthem Singer Mic Check", type: "rehearsal" },
+      { time: "4:10 PM",  title: "National Officer Mic Check", type: "rehearsal" },
+      { time: "4:30 PM",  title: "Dinner — Panda Express", type: "meal" },
+      { time: "5:40 PM",  title: "Camera Operator Call Time", type: "camera" },
+      { time: "5:50 PM",  title: "Replace Wireless Mic Batteries", type: "setup" },
+      { time: "6:00 PM",  title: "Doors Open", type: "presession" },
+      { time: "6:15 PM",  title: "Pre-Session: Mosh Pit / Dance Party", type: "presession",
+        notes: ["Play Ag West Sponsor Video", "Play Grange Co-op Sponsor Video", "Play Belonging & Engagement Video", "6:55 PM — Session Countdown Video Starts"] },
+      { time: "7:00 PM",  title: "Opening Session", type: "live" },
+      { time: "9:00 PM",  title: "Stage Rehearsal — Session Chair / RA Speaker", type: "rehearsal",
+        notes: "Next day rehearsal (if needed)" }
+    ]
+  },
+  {
+    id: "fri320",
+    label: "Fri 3/20",
+    date: "2026-03-20",
+    title: "Friday, March 20",
+    desc: "Session 2 · Session 3",
+    callTime: "6:30 AM",
+    items: [
+      { time: "6:45 AM",  title: "Beginning Public Speaking Mic Check", type: "rehearsal" },
+      { time: "6:55 AM",  title: "Camera Operator Call Time", type: "camera" },
+      { time: "7:05 AM",  title: "Replace Wireless Mic Batteries", type: "setup" },
+      { time: "7:15 AM",  title: "Doors Open / Pre-Session", type: "presession",
+        notes: ["Play Tillamook Sponsor Video", "Play Roundhouse Sponsor Video", "7:20 AM — Dance Party", "Play Wilco Sponsor Video", "7:55 AM — Session Countdown Video Starts"] },
+      { time: "8:00 AM",  title: "Session 2", type: "live" },
+      { time: "10:00 AM", title: "Possible IPS Technician Rest / Break", type: "break",
+        notes: "Window: 10:00 AM – 4:00 PM" },
+      { time: "10:00 AM", title: "State Degree Ceremony Rehearsal", type: "rehearsal" },
+      { time: "12:00 PM", title: "Lunch — Domino's", type: "meal" },
+      { time: "4:00 PM",  title: "Prepared Public Speaking Mic Check", type: "rehearsal" },
+      { time: "4:30 PM",  title: "National Anthem Singer Mic Check", type: "rehearsal" },
+      { time: "4:30 PM",  title: "Dinner — Applebee's", type: "meal" },
+      { time: "4:40 PM",  title: "Camera Operator Call Time", type: "camera" },
+      { time: "4:50 PM",  title: "Replace Wireless Mic Batteries", type: "setup" },
+      { time: "5:00 PM",  title: "Doors Open", type: "presession" },
+      { time: "5:15 PM",  title: "Pre-Session: Activity & Awards", type: "presession",
+        notes: ["Play Ag West Sponsor Video", "Wilco Gift Card Photo Contest Awards", "5:35 PM — Auction Cardboard Cutouts: Hunter & Vivian", "Play Grange Co-op Sponsor Video", "Play Belonging & Engagement Video", "5:55 PM — Session Countdown Video Starts"] },
+      { time: "6:00 PM",  title: "Session 3", type: "live" },
+      { time: "8:00 PM",  title: "Stage Rehearsal — Session Chair / RA Speaker", type: "rehearsal",
+        notes: "Next day rehearsal (if needed)" }
+    ]
+  },
+  {
+    id: "sat321",
+    label: "Sat 3/21",
+    date: "2026-03-21",
+    title: "Saturday, March 21",
+    desc: "Session 4 · Session 5",
+    callTime: "6:30 AM",
+    items: [
+      { time: "6:45 AM",  title: "Sophomore Public Speaking Mic Check", type: "rehearsal" },
+      { time: "6:55 AM",  title: "Camera Operator Call Time", type: "camera" },
+      { time: "7:05 AM",  title: "Replace Wireless Mic Batteries", type: "setup" },
+      { time: "7:15 AM",  title: "Doors Open / Pre-Session", type: "presession",
+        notes: ["Play Tillamook Sponsor Video", "Play Roundhouse Sponsor Video", "7:20 AM — Dance Party", "Play Wilco Sponsor Video", "7:55 AM — Session Countdown Video Starts"] },
+      { time: "8:00 AM",  title: "Spanish Creed Speaking Mic Check", type: "rehearsal" },
+      { time: "8:00 AM",  title: "Talent Show Finalists AV Meeting", type: "rehearsal",
+        notes: "@ Front of House (FOH)" },
+      { time: "8:00 AM",  title: "Session 4", type: "live" },
+      { time: "10:30 AM", title: "Possible IPS Technician Rest / Break", type: "break",
+        notes: "Window: 10:30 AM – 4:00 PM" },
+      { time: "10:30 AM", title: "Proficiency Awards Rehearsal", type: "rehearsal" },
+      { time: "12:00 PM", title: "Lunch — Jimmy John's", type: "meal" },
+      { time: "1:00 PM",  title: "Delegate Business Session", type: "live" },
+      { time: "4:00 PM",  title: "Extemporaneous Public Speaking Mic Check", type: "rehearsal" },
+      { time: "4:30 PM",  title: "Dinner — Taco Del Mar", type: "meal" },
+      { time: "4:30 PM",  title: "National Anthem Singer Mic Check", type: "rehearsal" },
+      { time: "4:40 PM",  title: "Camera Operator Call Time", type: "camera" },
+      { time: "4:50 PM",  title: "Replace Wireless Mic Batteries", type: "setup" },
+      { time: "5:00 PM",  title: "Doors Open", type: "presession" },
+      { time: "5:15 PM",  title: "Pre-Session: Activity & Awards", type: "presession",
+        notes: ["Play Ag West Sponsor Video", "Wilco Chapter Giveaway Presentations", "Talent Awards", "5:35 PM — Auction Cardboard Cutouts: Spencer & Julie", "Play Grange Co-op Sponsor Video", "Play Belonging & Engagement Video", "5:55 PM — Session Countdown Video Starts"] },
+      { time: "6:00 PM",  title: "Session 5", type: "live" },
+      { time: "8:00 PM",  title: "IPS Technician: Meet with Hypnotist Dr. Al Snyder & FFA Alumni Volunteer Technician — Sound Check, Cascade Lakes South Finals Stage", type: "rehearsal" },
+
+      { time: "9:00 PM",  title: "Stage Rehearsal — Session Chair / RA Speaker", type: "rehearsal",
+        notes: "Next day rehearsal (if needed)" }
+    ]
+  },
+  {
+    id: "sun322",
+    label: "Sun 3/22",
+    date: "2026-03-22",
+    title: "Sunday, March 22",
+    desc: "Final Session · Tear Down",
+    callTime: "6:30 AM",
+    items: [
+      { time: "8:00 AM",  title: "Delegate Business Session", type: "live" },
+      { time: "10:00 AM", title: "National Anthem Singer Mic Check", type: "rehearsal" },
+      { time: "10:00 AM", title: "Brunch", type: "meal" },
+      { time: "10:40 AM", title: "Camera Operator Call Time", type: "camera" },
+      { time: "10:50 AM", title: "Replace Wireless Mic Batteries", type: "setup" },
+      { time: "11:00 AM", title: "Doors Open", type: "presession" },
+      { time: "11:15 AM", title: "Pre-Session: Mosh Pit / Dance Party", type: "presession",
+        notes: ["Play Wilco Sponsor Video", "11:35 AM — Auction Cardboard Cutouts: Dale & Taft", "Play Tillamook Sponsor Video", "Play Belonging & Engagement Video", "11:55 AM — Session Countdown Video Starts"] },
+      { time: "12:00 PM", title: "Final Session", type: "live" },
+      { time: "2:00 PM",  title: "Pick Up Chairs", type: "setup" },
+      { time: "3:00 PM",  title: "Stage, Light & Sound Tear Down", type: "setup" },
+      { time: "4:30 PM",  title: "Dinner — Domino's", type: "meal" },
+      { time: "6:00 PM",  title: "Load IPS Semis", type: "setup" }
+    ]
+  },
+  {
+    id: "mon323",
+    label: "Mon 3/23",
+    date: "2026-03-23",
+    title: "Monday, March 23",
+    desc: "Strike Day",
+    callTime: "",
+    items: [
+      { time: "12:00 PM", title: "FFA Completely Out", type: "setup",
+        notes: "Full venue clear by noon" }
+    ]
+  }
+];
+
+const LAST_UPDATED = "March 19, 2026 — 8:10 AM";
+
+const TYPE_CONFIG = {
+  setup:      { label: "Setup / Strike",   tagClass: "tag-setup",      itemClass: "item-setup" },
+  rehearsal:  { label: "Rehearsal",         tagClass: "tag-rehearsal",   itemClass: "item-rehearsal" },
+  live:       { label: "Live / Session",    tagClass: "tag-live",        itemClass: "item-live" },
+  meal:       { label: "Meal",              tagClass: "tag-meal",        itemClass: "item-meal" },
+  misc:       { label: "Admin",             tagClass: "tag-misc",        itemClass: "item-misc" },
+  presession: { label: "Pre-Session",       tagClass: "tag-presession",  itemClass: "item-presession" },
+  break:      { label: "Break Window",       tagClass: "tag-misc",        itemClass: "item-misc" },
+  camera:     { label: "Camera",              tagClass: "tag-camera",      itemClass: "item-camera" },
+};
+
+function todayDateStr() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function buildTabs() {
+  const today = todayDateStr();
+  const tabsEl = document.getElementById('tabs');
+  let firstVisible = -1;
+  DAYS.forEach((day, i) => {
+    if (day.date < today) return; // hide past days
+    const isToday = day.date === today;
+    if (firstVisible === -1) firstVisible = i;
+    const tab = document.createElement('div');
+    tab.className = 'tab';
+    tab.dataset.idx = i;
+    tab.innerHTML = day.label + (isToday ? '<span class="today-badge">TODAY</span>' : '');
+    tab.addEventListener('click', () => switchTab(i));
+    tabsEl.appendChild(tab);
+  });
+}
+
+function buildContent() {
+  const contentEl = document.getElementById('content');
+  DAYS.forEach((day, i) => {
+    const panel = document.createElement('div');
+    panel.className = 'day-panel' + (i === 0 ? ' active' : '');
+    panel.id = 'panel-' + i;
+
+
+
+    const callTimeHTML = day.callTime
+      ? `<div class="call-time-banner">
+           <div class="call-time-label">📞 Call Time</div>
+           <div class="call-time-value">${day.callTime}</div>
+         </div>`
+      : `<div class="call-time-banner">
+           <div class="call-time-label">📞 Call Time</div>
+           <div class="call-time-value pending">TBD — check back for updates</div>
+         </div>`;
+
+    const itemsHTML = day.items.map(item => {
+      const cfg = TYPE_CONFIG[item.type] || TYPE_CONFIG.misc;
+      let notesHTML = '';
+      if (item.notes) {
+        if (Array.isArray(item.notes)) {
+          notesHTML = `<div class="item-notes"><ul>${item.notes.map(n => `<li>${n}</li>`).join('')}</ul></div>`;
+        } else {
+          notesHTML = `<div class="item-notes">${item.notes}</div>`;
+        }
+      }
+      if (item.type === 'break') {
+        return `<div class="break-zone">
+          <div class="break-zone-label">⏸ ${item.title}</div>
+          <div class="break-zone-time">${item.notes || ''}</div>
+        </div>`;
+      }
+      return `
+        <div class="schedule-item ${cfg.itemClass}">
+          <div class="item-time">${item.time}</div>
+          <div class="item-right">
+            <div class="item-title">${item.title}</div>
+            ${notesHTML}
+            <span class="tag ${cfg.tagClass}">${cfg.label}</span>
+          </div>
+        </div>`;
+    }).join('');
+
+    panel.innerHTML = `
+      <div class="day-header">
+        <h2>${day.title}</h2>
+        <div class="day-desc">${day.desc}</div>
+      </div>
+      ${callTimeHTML}
+      <div class="schedule">${itemsHTML}</div>
+      <div class="last-updated">Last updated: ${LAST_UPDATED}</div>
+      <div class="day-footer">
+        <a href="tel:+15415565916" class="footer-contact">
+          <span class="footer-name">Jason DeMoe</span>
+          <span class="footer-divider">|</span>
+          <span class="footer-phone">541-556-5916</span>
+        </a>
+      </div>`;
+
+    contentEl.appendChild(panel);
+  });
+}
+
+function switchTab(idx, scroll = true) {
+  // tabs: compare against stored DAYS index (past days are removed from DOM)
+  document.querySelectorAll('.tab').forEach((t) => {
+    t.classList.toggle('active', parseInt(t.dataset.idx) === idx);
+  });
+  // panels: all DAYS panels exist in DOM, so direct index match works
+  document.querySelectorAll('.day-panel').forEach((p, i) => {
+    p.classList.toggle('active', i === idx);
+  });
+  if (scroll) {
+    document.getElementById('content').scrollTop = 0;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+buildTabs();
+buildContent();
+
+const today = todayDateStr();
+// Find today or the next upcoming day
+const visibleDays = DAYS.filter(d => d.date >= today);
+const firstDay = visibleDays.length > 0 ? visibleDays[0] : null;
+const firstIdx = firstDay ? DAYS.findIndex(d => d.date === firstDay.date) : 0;
+switchTab(firstIdx);
+
+// Auto-refresh when the calendar date rolls over (so stale open tabs update overnight)
+const _loadedDate = todayDateStr();
+setInterval(function() {
+  if (todayDateStr() !== _loadedDate) {
+    location.reload();
+  }
+}, 60000); // check every 60 seconds
+</script>
+</body>
+</html>
