@@ -211,6 +211,35 @@
     .item-misc::before     { background: var(--purple); }
     .item-presession::before { background: var(--cyan); }
   .item-camera::before     { background: #f59e0b; }
+    /* ── Now & Next live indicator ── */
+    .item-now {
+      background: rgba(16, 185, 129, 0.12);
+      border-left: none;
+      outline: 2px solid #10b981;
+      outline-offset: -2px;
+    }
+    .item-now::before { background: #10b981 !important; width: 4px; }
+    .item-next {
+      background: rgba(59, 130, 246, 0.08);
+      border-left: none;
+      outline: 1px solid rgba(59, 130, 246, 0.4);
+      outline-offset: -1px;
+    }
+    .item-next::before { width: 4px; }
+    .now-badge, .next-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      border-radius: 4px;
+      padding: 2px 6px;
+      margin-left: 6px;
+      vertical-align: middle;
+      letter-spacing: 0.05em;
+    }
+    .now-badge  { background: #10b981; color: #fff; }
+    .next-badge { background: rgba(59,130,246,0.18); color: #3b82f6; }
+
 
     .item-time {
       font-size: 13px;
@@ -543,7 +572,7 @@ const DAYS = [
   }
 ];
 
-const LAST_UPDATED = "March 19, 2026 — 11:54 AM";
+const LAST_UPDATED = "March 19, 2026 — 2:03 PM";
 
 const TYPE_CONFIG = {
   setup:      { label: "Setup / Strike",   tagClass: "tag-setup",      itemClass: "item-setup" },
@@ -671,6 +700,81 @@ const visibleDays = DAYS.filter(d => d.date >= today);
 const firstDay = visibleDays.length > 0 ? visibleDays[0] : null;
 const firstIdx = firstDay ? DAYS.findIndex(d => d.date === firstDay.date) : 0;
 switchTab(firstIdx);
+
+
+// ── Now & Next live indicator ──
+function parseItemTime(timeStr) {
+  // Parse "5:30 PM", "10:00 AM", "All Day" etc → minutes since midnight, or null
+  if (!timeStr || timeStr === 'All Day' || timeStr === '' || timeStr === 'TBD') return null;
+  const m = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+  if (!m) return null;
+  let h = parseInt(m[1]);
+  const min = parseInt(m[2]);
+  const ampm = m[3].toUpperCase();
+  if (ampm === 'PM' && h !== 12) h += 12;
+  if (ampm === 'AM' && h === 12) h = 0;
+  return h * 60 + min;
+}
+
+function updateNowNext() {
+  const today = todayDateStr();
+  const todayDayIdx = DAYS.findIndex(d => d.date === today);
+  if (todayDayIdx === -1) return; // today not in schedule
+
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+
+  // Get all schedule-item elements in today's panel
+  const panel = document.getElementById('panel-' + todayDayIdx);
+  if (!panel) return;
+
+  const items = panel.querySelectorAll('.schedule-item');
+  // Clear previous indicators
+  items.forEach(el => {
+    el.classList.remove('item-now', 'item-next');
+    el.querySelectorAll('.now-badge, .next-badge').forEach(b => b.remove());
+  });
+
+  // Find now (last item whose time <= nowMins) and next (first item whose time > nowMins)
+  // Match DOM items to DAYS[todayDayIdx].items (filtered to non-break)
+  const schedItems = DAYS[todayDayIdx].items.filter(it => it.type !== 'break');
+  let nowIdx = -1, nextIdx = -1;
+
+  schedItems.forEach((item, i) => {
+    const t = parseItemTime(item.time);
+    if (t === null) return;
+    if (t <= nowMins) nowIdx = i;
+  });
+  // next = first item after nowIdx with a parseable time > nowMins
+  for (let i = 0; i < schedItems.length; i++) {
+    const t = parseItemTime(schedItems[i].time);
+    if (t !== null && t > nowMins) { nextIdx = i; break; }
+  }
+
+  if (nowIdx !== -1 && items[nowIdx]) {
+    items[nowIdx].classList.add('item-now');
+    const titleEl = items[nowIdx].querySelector('.item-title');
+    if (titleEl) {
+      const badge = document.createElement('span');
+      badge.className = 'now-badge';
+      badge.textContent = '▶ NOW';
+      titleEl.appendChild(badge);
+    }
+  }
+  if (nextIdx !== -1 && items[nextIdx]) {
+    items[nextIdx].classList.add('item-next');
+    const titleEl = items[nextIdx].querySelector('.item-title');
+    if (titleEl) {
+      const badge = document.createElement('span');
+      badge.className = 'next-badge';
+      badge.textContent = 'UP NEXT';
+      titleEl.appendChild(badge);
+    }
+  }
+}
+
+updateNowNext();
+setInterval(updateNowNext, 60000);
 
 // Auto-refresh when the calendar date rolls over (so stale open tabs update overnight)
 const _loadedDate = todayDateStr();
