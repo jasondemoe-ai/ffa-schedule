@@ -211,6 +211,16 @@
     .item-misc::before     { background: var(--purple); }
     .item-presession::before { background: var(--cyan); }
   .item-camera::before     { background: #f59e0b; }
+
+    /* ── Night-time items (8 PM+) ── */
+    .night-item {
+      background: rgba(30, 27, 75, 0.55) !important;
+      border-color: rgba(99, 102, 241, 0.4) !important;
+    }
+    .night-item .item-time::before {
+      content: "🌙 ";
+      font-size: 0.75em;
+    }
     /* ── Now & Next live indicator ── */
     .item-now,
     .item-next {
@@ -650,8 +660,10 @@ function buildContent() {
           <div class="break-zone-time">${item.notes || ''}</div>
         </div>`;
       }
+      const itemMins = parseTimeToMins(item.time);
+      const isNight = itemMins !== null && itemMins >= 20 * 60;
       return `
-        <div class="schedule-item ${cfg.itemClass}">
+        <div class="schedule-item ${cfg.itemClass}${isNight ? ' night-item' : ''}">
           <div class="item-time">${item.time}</div>
           <div class="item-right">
             <div class="item-title">${item.title}</div>
