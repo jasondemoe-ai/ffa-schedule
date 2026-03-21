@@ -213,24 +213,6 @@
   .item-camera::before     { background: #f59e0b; }
 
     /* ── Night-time items (8 PM+) ── */
-    .night-divider {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 0 2px;
-      color: #a5b4fc;
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-    .night-divider::before,
-    .night-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(99, 102, 241, 0.35);
-    }
     .night-item {
       background: rgba(99, 102, 241, 0.1) !important;
       border: 1px solid rgba(99, 102, 241, 0.45) !important;
@@ -547,8 +529,6 @@ const DAYS = [
         notes: ["Play Tillamook Sponsor Video", "Play Roundhouse Sponsor Video", "7:20 AM — Dance Party", "Play Wilco Sponsor Video", "7:55 AM — Session Countdown Video Starts"] },
       { time: "7:30 AM",  title: "Camera Operator Call Time", type: "camera" },
       { time: "8:00 AM",  title: "Spanish Creed Speaking Mic Check", type: "rehearsal" },
-      { time: "8:00 PM",  title: "Talent Show Finalists AV Meeting", type: "rehearsal",
-        notes: "@ Front of House (FOH)" },
       { time: "8:00 AM",  title: "Session 4", type: "live" },
       { time: "10:30 AM", title: "Possible IPS Technician Rest / Break", type: "break",
         notes: "Window: 10:30 AM – 4:00 PM" },
@@ -565,6 +545,8 @@ const DAYS = [
         notes: ["Play Ag West Sponsor Video", "Wilco Chapter Giveaway Presentations", "Talent Awards", "5:35 PM — Auction Cardboard Cutouts: Spencer & Julie", "Play Grange Co-op Sponsor Video", "Play Belonging & Engagement Video", "5:55 PM — Session Countdown Video Starts"] },
       { time: "6:00 PM",  title: "Session 5", type: "live" },
       { time: "8:00 PM",  title: "IPS Technician: Meet with Hypnotist Dr. Al Snyder & FFA Alumni Volunteer Technician — Sound Check, Cascade Lakes South Finals Stage", type: "rehearsal" },
+      { time: "8:00 PM",  title: "Talent Show Finalists AV Meeting", type: "rehearsal",
+        notes: "@ Front of House (FOH)" },
 
       { time: "9:00 PM",  title: "Stage Rehearsal — Session Chair / RA Speaker", type: "rehearsal",
         notes: "Next day rehearsal (if needed)" }
@@ -664,7 +646,6 @@ function buildContent() {
            <div class="call-time-value pending">TBD — check back for updates</div>
          </div>`;
 
-    let seenNight = false;
     const itemsHTML = day.items.map(item => {
       const cfg = TYPE_CONFIG[item.type] || TYPE_CONFIG.misc;
       let notesHTML = '';
@@ -683,8 +664,7 @@ function buildContent() {
       }
       const itemMins = parseItemTime(item.time);
       const isNight = itemMins !== null && itemMins >= 20 * 60;
-      const nightDivider = (isNight && !seenNight) ? (seenNight = true, `<div class="night-divider">🌙 Night</div>`) : '';
-      return nightDivider + `
+      return `
         <div class="schedule-item ${cfg.itemClass}${isNight ? ' night-item' : ''}">
           <div class="item-time">${item.time}</div>
           <div class="item-right">
