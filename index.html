@@ -660,7 +660,7 @@ function buildContent() {
           <div class="break-zone-time">${item.notes || ''}</div>
         </div>`;
       }
-      const itemMins = parseTimeToMins(item.time);
+      const itemMins = parseItemTime(item.time);
       const isNight = itemMins !== null && itemMins >= 20 * 60;
       return `
         <div class="schedule-item ${cfg.itemClass}${isNight ? ' night-item' : ''}">
