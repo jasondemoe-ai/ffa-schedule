@@ -683,10 +683,10 @@ function buildContent() {
       }
       const itemMins = parseItemTime(item.time);
       const isNight = itemMins !== null && itemMins >= 20 * 60;
-      const nightDivider = (isNight && !seenNight) ? (seenNight = true, \`<div class="night-divider">🌙 Night</div>\`) : '';
-      return nightDivider + \`
+      const nightDivider = (isNight && !seenNight) ? (seenNight = true, `<div class="night-divider">🌙 Night</div>`) : '';
+      return nightDivider + `
         <div class="schedule-item ${cfg.itemClass}${isNight ? ' night-item' : ''}">
-          <div class="item-time">${item.time}</div>\`
+          <div class="item-time">${item.time}</div>
           <div class="item-right">
             <div class="item-title">${item.title}</div>
             ${notesHTML}
