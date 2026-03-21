@@ -212,7 +212,23 @@
     .item-presession::before { background: var(--cyan); }
   .item-camera::before     { background: #f59e0b; }
 
-    /* ── Night-time items (8 PM+) ── */
+    /* ── Live Clock ── */
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    #live-clock {
+      font-size: 20px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+      letter-spacing: 0.5px;
+      line-height: 1;
+    }
+
+        /* ── Night-time items (8 PM+) ── */
     .night-item {
       background: rgba(99, 102, 241, 0.1) !important;
       border: 1px solid rgba(99, 102, 241, 0.45) !important;
@@ -396,10 +412,13 @@
       <div class="header-title">Session Hall Schedule</div>
       <div class="header-sub">Oregon FFA State Convention</div>
     </div>
-    <button class="refresh-btn" onclick="location.reload()">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-      Refresh
-    </button>
+    <div class="header-right">
+      <span id="live-clock">--:--:-- --</span>
+      <button class="refresh-btn" onclick="location.reload()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        Refresh
+      </button>
+    </div>
   </div>
   <div class="tabs" id="tabs"></div>
 </div>
@@ -807,6 +826,20 @@ setInterval(function() {
     location.reload();
   }
 }, 60000); // check every 60 seconds
+
+  // ── Live Clock ──
+  function updateClock() {
+    const now = new Date();
+    const h = now.getHours();
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = (h % 12) || 12;
+    document.getElementById('live-clock').textContent = `${h12}:${m}:${s} ${ampm}`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
 </script>
 </body>
 </html>
